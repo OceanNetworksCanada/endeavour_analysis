@@ -112,10 +112,11 @@ def plot_eqs(i,date_range,date,df,circle_size,max_transparency,freq,dgrid,sta_fi
 	fig.savefig('../results/images/'+date.strftime('%Y-%m-%d-%H-%M-%S')+'_endeavour.png',dpi='150')
 
 # File locations
-mat_file = 'location_739316.mat' # Daily location file
+mat_file = 'location_739315.mat' # Daily location file
 geojson_file = '../data/input/RingSpur.geoJson'
 endeavour_file_dir = '../data/input' # Location of Endeavour segment .dat files
 location_file = '../data/raw/'+mat_file
+sta_file = '../data/input/endeavour_metadata.csv'
 
 # Input parameters
 freq = '5min' # Frequency of EQ sampling, can be changed to minutes (min) or hours (H)
