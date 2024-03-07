@@ -107,7 +107,9 @@ def plot_eqs(i,date_range,date,df,circle_size,max_transparency,freq,dgrid,sta_fi
 	fig.colorbar(frame='af+l"Depth (km)"')
 # 	fig.show(method="external")
 	
-	fig.savefig('../results/images/'+date.strftime('%Y-%m-%d-%H-%M-%S')+'_endeavour.png',dpi='100')
+	if not os.path.exists('../results/images'):
+		os.mkdirs('../results/images')
+	fig.savefig('../results/images/'+date.strftime('%Y-%m-%d-%H-%M-%S')+'_endeavour.png',dpi='150')
 
 # File locations
 geojson_file = '../data/input/RingSpur.geoJson'
