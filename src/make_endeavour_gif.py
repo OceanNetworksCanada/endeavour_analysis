@@ -45,12 +45,10 @@ def plot_eqs(i,date_range,date,df,circle_size,max_transparency,freq,dgrid,sta_fi
 	print('Generating map for '+str(date))
 	start = date
 	if i == len(date_range)-1:
-# 		df_sub = df[df['datetime'] >= start].reset_index(drop=True)
 		df_sub = df
 		end = df_sub.iloc[-1]['datetime']
 	else:
 		end = date_range[i+1]
-# 		df_sub = df[(df['datetime'] >= start) & (df['datetime'] < end)].reset_index(drop=True)
 		df_sub = df[(df['datetime'] < end)].reset_index(drop=True)
 	sta_df = get_sta_info(sta_file,start,end)
 	df_sub['transparency'] = 0
@@ -91,7 +89,7 @@ def plot_eqs(i,date_range,date,df,circle_size,max_transparency,freq,dgrid,sta_fi
 		fig.plot(
 			x=df_sub.lon.values,
 			y=df_sub.lat.values,
-			size=0.1 * 2**df_sub.p_mag.values,
+			size=0.1 * 2**df_sub.mag.values,
 			fill=df_sub.z.values,
 			cmap=True,
 			style="cc",
@@ -112,7 +110,7 @@ def plot_eqs(i,date_range,date,df,circle_size,max_transparency,freq,dgrid,sta_fi
 	fig.savefig('../results/images/'+date.strftime('%Y-%m-%d-%H-%M-%S')+'_endeavour.png',dpi='150')
 
 # File locations
-mat_file = 'location_739315.mat' # Daily location file
+mat_file = 'location_739314.mat' # Daily location file
 geojson_file = '../data/input/RingSpur.geoJson'
 endeavour_file_dir = '../data/input' # Location of Endeavour segment .dat files
 location_file = '../data/raw/'+mat_file
@@ -136,12 +134,16 @@ complete = complete[:,1]
 origin = [[x[0][0] for x in loc[['ot','lat','lon','z','erh','erz']][0][0]] for loc in loc_dat[0][complete_ids]['nlloc_hypo']]
 p_mag = [np.nanmedian(mag[0]) for mag in loc_dat[0][complete_ids]['PMomMagnitude']]
 s_mag = [np.nanmedian(mag[0]) for mag in loc_dat[0][complete_ids]['SMomMagnitude']]
+p_mags = [mag[0] for mag in loc_dat[0][complete_ids]['PMomMagnitude']]
+s_mags = [mag[0] for mag in loc_dat[0][complete_ids]['SMomMagnitude']]
+mags = [np.nanmedian(np.concatenate([p_mags[i],s_mags[i]])) for i in range(len(p_mags))]
 data = np.array([[x[0][0] for x in loc[['rms','nwp','nws','nwr']]] for loc in loc_dat[0][complete_ids]])
 
 # Create Pandas DataFrame for location data
 df = pd.DataFrame(origin,columns=['ot','lat','lon','z','erh','erz'])
 df['p_mag'] = p_mag
 df['s_mag'] = s_mag
+df['mag'] = mags
 df[['rms','nwp','nws','nwr']] = data
 
 df['datetime'] = pd.to_datetime(df.ot - 719529,unit='D')
