@@ -2,7 +2,7 @@ import scipy.io as sio
 import numpy as np
 import pandas as pd
 import os
-from joblib import Parallel, delayed
+from joblib import Parallel, delayed, cpu_count
 import geojson
 import glob
 import pygmt
@@ -110,7 +110,7 @@ def plot_eqs(i,date_range,date,df,circle_size,max_transparency,freq,dgrid,sta_fi
 	fig.savefig('../results/images/'+date.strftime('%Y-%m-%d-%H-%M-%S')+'_endeavour.png',dpi='150')
 
 # File locations
-mat_file = 'location_739314.mat' # Daily location file
+mat_file = 'location_739317.mat' # Daily location file
 geojson_file = '../data/input/RingSpur.geoJson'
 endeavour_file_dir = '../data/input' # Location of Endeavour segment .dat files
 location_file = '../data/raw/'+mat_file
@@ -146,6 +146,7 @@ df['s_mag'] = s_mag
 df['mag'] = mags
 df[['rms','nwp','nws','nwr']] = data
 
+# Convert MATLAB time to datetime
 df['datetime'] = pd.to_datetime(df.ot - 719529,unit='D')
 
 # Load ONC cable geojson file
@@ -177,7 +178,7 @@ date_range = pd.date_range(start=df['datetime'].min().round('H'), end=df['dateti
 
 # Parallel process the data, you may need to change the n_jobs value depending on how many
 # cores you have. I have 20...
-Parallel(n_jobs=-10)(delayed(plot_eqs)(i,date_range,date,df,circle_size,max_transparency,
+Parallel(n_jobs=int(cpu_count()/2))(delayed(plot_eqs)(i,date_range,date,df,circle_size,max_transparency,
 	freq,dgrid,sta_file,en_dfs) for i,date in enumerate(date_range))
 
 print('Combining maps into a GIF')
