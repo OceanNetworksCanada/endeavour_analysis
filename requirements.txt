@@ -1,0 +1,12 @@
+# Python requirements
+scipy
+numpy
+pandas
+joblib
+geojson
+glob
+pygmt
+
+# External requirements
+HomeBrew (or equivalent package manager)
+ImageMagick (brew install ImageMagick)

@@ -112,14 +112,15 @@ def plot_eqs(i,date_range,date,df,circle_size,max_transparency,freq,dgrid,sta_fi
 	fig.savefig('../results/images/'+date.strftime('%Y-%m-%d-%H-%M-%S')+'_endeavour.png',dpi='150')
 
 # File locations
+mat_file = 'location_739316.mat' # Daily location file
 geojson_file = '../data/input/RingSpur.geoJson'
 endeavour_file_dir = '../data/input' # Location of Endeavour segment .dat files
-location_file = '../data/raw/location_739317.mat'
+location_file = '../data/raw/'+mat_file
 
 # Input parameters
 freq = '5min' # Frequency of EQ sampling, can be changed to minutes (min) or hours (H)
-circle_size = 0.1
-max_transparency = 100
+circle_size = 0.1 # Controls the size of earthquakes on the map, which depend on magnitude
+max_transparency = 100 # How transparent do you want day old eqs? 0 (opaque) - 100 (invisible)
 region_padding = 0.1 # Padding for the map region (degrees)
 
 # Load location data
@@ -177,13 +178,12 @@ Parallel(n_jobs=-10)(delayed(plot_eqs)(i,date_range,date,df,circle_size,max_tran
 	freq,dgrid,sta_file,en_dfs) for i,date in enumerate(date_range))
 
 print('Combining maps into a GIF')
-import os
 # This requires ImageMagick which can be installed with Homebrew (brew install ImageMagick)
+# Use the -delay command to increase the animation time
 # os.system("convert -delay 60 images/*.png images/eqs.gif")
-date_range[0]
 os.system("convert ../results/images/*.png ../results/images/eqs_"+date_range[0].strftime('%Y%m%d')+'_'+freq+".gif")
 # Remove PNG files
-os.remove('../results/images/*.png')
+[os.remove(file) for file in glob.glob('../results/images/*.png')]
 
 ### Code for loading 'event' .mat files
 # dat = sio.loadmat('/Volumes/SeaJade 2 Backup/ONC/Programs/EndeavourAutoLocate/output/event_739317.mat')['event']
