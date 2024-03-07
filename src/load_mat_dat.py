@@ -180,8 +180,10 @@ print('Combining maps into a GIF')
 import os
 # This requires ImageMagick which can be installed with Homebrew (brew install ImageMagick)
 # os.system("convert -delay 60 images/*.png images/eqs.gif")
-os.system("convert ../results/images/*.png ../results/images/eqs_"+freq+".gif")
-
+date_range[0]
+os.system("convert ../results/images/*.png ../results/images/eqs_"+date_range[0].strftime('%Y%m%d')+'_'+freq+".gif")
+# Remove PNG files
+os.remove('../results/images/*.png')
 
 ### Code for loading 'event' .mat files
 # dat = sio.loadmat('/Volumes/SeaJade 2 Backup/ONC/Programs/EndeavourAutoLocate/output/event_739317.mat')['event']
